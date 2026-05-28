@@ -1,0 +1,6 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="100" cy="100" r="95" fill="none" stroke="#1E90FF" stroke-width="8"/>
+  <circle cx="100" cy="100" r="70" fill="none" stroke="#1E90FF" stroke-width="6"/>
+  <path d="M100 40 L140 75 L140 135 L100 160 L60 135 L60 75 Z" fill="#1E90FF"/>
+  <text x="100" y="175" font-size="20" font-weight="bold" fill="#1E90FF" text-anchor="middle">CMRL</text>
+</svg>
