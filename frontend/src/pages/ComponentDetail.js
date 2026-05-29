@@ -291,16 +291,18 @@ export default function ComponentDetail() {
             Component details
           </div>
           {[
-            { label: 'Component ID', value: component.component_id, mono: true },
-            { label: 'Code', value: component.code || 'N/A', mono: true },
-            { label: 'Category', value: component.category },
-            { label: 'Storage location', value: component.storage_location || 'N/A', mono: true },
-            { label: 'Unit', value: component.unit },
-            { label: 'Supplier', value: component.supplier || 'N/A' },
-            { label: 'Low stock threshold', value: component.low_stock_threshold },
-            { label: 'Created', value: formatDate(component.created_at) },
-            { label: 'Last updated', value: formatDate(component.updated_at) },
-          ].map((row) => (
+  { label: 'Component ID', value: component.component_id, mono: true },
+  { label: 'Code', value: component.code || 'N/A', mono: true },
+  { label: 'Category', value: component.category },
+  { label: 'Invoice No', value: component.invoice_no || 'N/A', mono: true },
+  { label: 'Vendor Name', value: component.vendor_name || 'N/A' },
+  { label: 'Storage location', value: component.storage_location || 'N/A', mono: true },
+  { label: 'Unit', value: component.unit },
+  { label: 'Supplier', value: component.supplier || 'N/A' },
+  { label: 'Low stock threshold', value: component.low_stock_threshold },
+  { label: 'Created', value: formatDate(component.created_at) },
+  { label: 'Last updated', value: formatDate(component.updated_at) },
+].map((row) => (
             <div key={row.label} style={{
               display: 'flex', justifyContent: 'space-between',
               padding: '8px 0',
