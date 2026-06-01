@@ -16,6 +16,11 @@ const io = new Server(server, {
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
+
 // Register routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/components', require('./routes/components'));
