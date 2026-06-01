@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:5000');
+const socket = io('https://cmrl-inventory-production.up.railway.app');
 
 const categoryLabels = {
   passive: 'Passive Components',
@@ -54,7 +54,7 @@ export default function ComponentList() {
     fetchComponents();
     socket.on('stockUpdate', fetchComponents);
     return () => socket.off('stockUpdate');
-  }, [category]);
+  }, [category, fetchComponents]);
 
   useEffect(() => {
     setForm((prev) => ({ ...prev, category }));
@@ -88,7 +88,7 @@ export default function ComponentList() {
   const handleDeleteComponent = async (componentId) => {
     if (!window.confirm('Are you sure you want to delete this component?')) return;
     try {
-      const response = await fetch(`http://localhost:5000/api/components/${componentId}`, {
+      const response = await fetch(`https://cmrl-inventory-production.up.railway.app/api/components/${componentId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
