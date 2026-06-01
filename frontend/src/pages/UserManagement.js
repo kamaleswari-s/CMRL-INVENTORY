@@ -29,7 +29,7 @@ export default function UserManagement() {
   useEffect(() => {
     if (user?.role !== 'admin') return;
     fetchUsers();
-  }, []);
+  }, [user?.role]);
 
   const handleCreate = async (e) => {
     e.preventDefault();
@@ -235,7 +235,7 @@ export default function UserManagement() {
                       {new Date(u.created_at).toLocaleDateString('en-IN')}
                     </td>
                     <td style={{ padding: '12px 16px' }}>
-                      {u.id !== user.id && (
+                      {u.id !== user?.id && (
                         <button
                           onClick={() => handleToggleActive(u)}
                           style={{

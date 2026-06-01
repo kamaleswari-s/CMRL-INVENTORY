@@ -3,13 +3,12 @@ import { useParams, useNavigate } from 'react-router-dom';
 import {
   getComponent,
   getComponentTransactions,
-  createTransaction,
 } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:5000');
+const socket = io('https://cmrl-inventory-production.up.railway.app');
 
 export default function ComponentDetail() {
   const { component_id } = useParams();
@@ -75,7 +74,7 @@ export default function ComponentDetail() {
       return;
     }
     try {
-      const response = await fetch('http://localhost:5000/api/transactions', {
+      const response = await fetch('https://cmrl-inventory-production.up.railway.app/api/transactions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -103,7 +102,7 @@ export default function ComponentDetail() {
   const handleEditDetails = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:5000/api/components/${component_id}`, {
+      const response = await fetch(`https://cmrl-inventory-production.up.railway.app/api/components/${component_id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -133,7 +132,7 @@ export default function ComponentDetail() {
   const handleDelete = async () => {
     if (!window.confirm(`Are you sure you want to delete ${component.name}?`)) return;
     try {
-      const response = await fetch(`http://localhost:5000/api/components/${component_id}`, {
+      const response = await fetch(`https://cmrl-inventory-production.up.railway.app/api/components/${component_id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });

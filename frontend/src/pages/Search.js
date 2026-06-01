@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 
 export default function Search() {
   const [searchParams] = useSearchParams();
-  const { user } = useAuth();
   const navigate = useNavigate();
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,7 +21,7 @@ export default function Search() {
   const fetchResults = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`http://localhost:5000/api/search?q=${q}`, {
+      const res = await fetch(`https://cmrl-inventory-production.up.railway.app/api/search?q=${q}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       const data = await res.json();

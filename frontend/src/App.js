@@ -1,5 +1,5 @@
 import Trash from './pages/Trash';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Layout from './components/Layout';
@@ -12,7 +12,6 @@ import Search from './pages/Search';
 import GlobalSearch from './pages/GlobalSearch';
 import AuditLog from './pages/AuditLog';
 import UserManagement from './pages/UserManagement';
-import toast from 'react-hot-toast';
 
 function ProtectedRoute({ element }) {
   const { user, loading } = useAuth();
