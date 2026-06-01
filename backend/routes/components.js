@@ -7,7 +7,7 @@ const auth = require('../middleware/auth');
 router.get('/', auth, async (req, res) => {
   try {
     const result = await pool.query(
-      'SELECT * FROM components WHERE deleted_at IS NULL ORDER BY component_id ASC'
+      'SELECT * FROM components WHERE deleted_at IS NULL ORDER BY created_at ASC'
     );
     res.json(result.rows);
   } catch (err) {
@@ -19,7 +19,7 @@ router.get('/', auth, async (req, res) => {
 router.get('/category/:category', auth, async (req, res) => {
   try {
     const result = await pool.query(
-      'SELECT * FROM components WHERE category = $1 AND deleted_at IS NULL ORDER BY component_id ASC',
+      'SELECT * FROM components WHERE category = $1 AND deleted_at IS NULL ORDER BY created_at ASC',
       [req.params.category]
     );
     res.json(result.rows);
@@ -144,7 +144,8 @@ router.post('/', auth, async (req, res) => {
   const {
     component_id, name, code, category,
     total_stock, storage_location,
-    low_stock_threshold, unit, supplier, notes
+    low_stock_threshold, unit, notes,
+    invoice_no, vendor_name
   } = req.body;
   if (!['admin', 'store_manager'].includes(req.user.role)) {
     return res.status(403).json({ message: 'Access denied' });
@@ -153,11 +154,11 @@ router.post('/', auth, async (req, res) => {
     const result = await pool.query(
       `INSERT INTO components 
         (component_id, name, code, category, total_stock, remaining_stock,
-         storage_location, low_stock_threshold, unit, supplier, notes)
-       VALUES ($1,$2,$3,$4,$5,$5,$6,$7,$8,$9,$10)
+         storage_location, low_stock_threshold, unit, notes, invoice_no, vendor_name)
+       VALUES ($1,$2,$3,$4,$5,$5,$6,$7,$8,$9,$10,$11)
        RETURNING *`,
       [component_id, name, code, category, total_stock,
-       storage_location, low_stock_threshold, unit, supplier, notes]
+       storage_location, low_stock_threshold, unit, notes, invoice_no, vendor_name]
     );
     res.status(201).json(result.rows[0]);
   } catch (err) {
@@ -175,17 +176,19 @@ router.put('/:component_id', auth, async (req, res) => {
   }
   const {
     name, code, storage_location,
-    low_stock_threshold, unit, supplier, notes
+    low_stock_threshold, unit, notes,
+    invoice_no, vendor_name
   } = req.body;
   try {
     const result = await pool.query(
       `UPDATE components SET
         name=$1, code=$2, storage_location=$3,
-        low_stock_threshold=$4, unit=$5, supplier=$6,
-        notes=$7, updated_at=NOW()
-       WHERE component_id=$8 AND deleted_at IS NULL RETURNING *`,
+        low_stock_threshold=$4, unit=$5,
+        notes=$6, invoice_no=$7, vendor_name=$8, updated_at=NOW()
+       WHERE component_id=$9 AND deleted_at IS NULL RETURNING *`,
       [name, code, storage_location,
-       low_stock_threshold, unit, supplier, notes,
+       low_stock_threshold, unit, notes,
+       invoice_no, vendor_name,
        req.params.component_id]
     );
     if (result.rows.length === 0) {

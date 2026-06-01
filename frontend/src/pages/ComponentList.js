@@ -33,8 +33,9 @@ export default function ComponentList() {
     storage_location: '',
     low_stock_threshold: 20,
     unit: 'pcs',
-    supplier: '',
     notes: '',
+    invoice_no: '',
+    vendor_name: '',
   });
 
   const fetchComponents = async () => {
@@ -74,8 +75,9 @@ export default function ComponentList() {
         storage_location: '',
         low_stock_threshold: 20,
         unit: 'pcs',
-        supplier: '',
         notes: '',
+        invoice_no: '',
+        vendor_name: '',
       });
       fetchComponents();
     } catch (err) {
@@ -184,7 +186,8 @@ export default function ComponentList() {
                 { label: 'Total Stock', key: 'total_stock', placeholder: 'e.g. 500', type: 'number' },
                 { label: 'Low Stock Threshold', key: 'low_stock_threshold', placeholder: 'e.g. 20', type: 'number' },
                 { label: 'Unit', key: 'unit', placeholder: 'e.g. pcs' },
-                { label: 'Supplier', key: 'supplier', placeholder: 'e.g. ABC Electronics' },
+                { label: 'Invoice No', key: 'invoice_no', placeholder: 'e.g. INV-2024-001' },
+                { label: 'Vendor Name', key: 'vendor_name', placeholder: 'e.g. Electronics Vendor Ltd' },
               ].map((field) => (
                 <div key={field.key}>
                   <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'rgba(245,240,232,0.4)', marginBottom: '5px' }}>
@@ -273,7 +276,7 @@ export default function ComponentList() {
           <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
             <thead>
               <tr style={{ background: 'rgba(30,144,255,0.05)' }}>
-                {['ID', 'Name', 'Code', 'Total', 'Remaining', 'Used', 'Shipped', 'Location', 'Status', 'Action'].map((h) => (
+                {['ID', 'Name', 'Code', 'Total', 'Remaining', 'Used', 'Shipped', 'Invoice No', 'Vendor Name', 'Location', 'Status', 'Action'].map((h) => (
                   <th key={h} style={{
                     padding: '10px 12px', textAlign: 'left',
                     fontSize: '10px', fontWeight: 600,
@@ -309,6 +312,8 @@ export default function ComponentList() {
                     </td>
                     <td style={{ padding: '10px 12px', fontSize: '12px', color: 'rgba(245,240,232,0.6)' }}>{comp.used_quantity}</td>
                     <td style={{ padding: '10px 12px', fontSize: '12px', color: 'rgba(245,240,232,0.6)' }}>{comp.shipped_quantity}</td>
+                    <td style={{ padding: '10px 12px', fontFamily: 'JetBrains Mono, monospace', fontSize: '11px', color: 'rgba(245,240,232,0.5)' }}>{comp.invoice_no || 'N/A'}</td>
+                    <td style={{ padding: '10px 12px', fontSize: '12px', color: 'rgba(245,240,232,0.6)' }}>{comp.vendor_name || 'N/A'}</td>
                     <td style={{ padding: '10px 12px', fontFamily: 'JetBrains Mono, monospace', fontSize: '11px', color: 'rgba(245,240,232,0.5)' }}>{comp.storage_location}</td>
                     <td style={{ padding: '10px 12px' }}>
                       <span style={{ background: status.bg, color: status.color, fontSize: '10px', fontWeight: 600, padding: '2px 8px', borderRadius: '20px' }}>

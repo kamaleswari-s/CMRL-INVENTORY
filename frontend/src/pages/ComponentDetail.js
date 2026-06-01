@@ -19,9 +19,20 @@ export default function ComponentDetail() {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showUpdate, setShowUpdate] = useState(false);
+  const [showEditDetails, setShowEditDetails] = useState(false);
   const [updateForm, setUpdateForm] = useState({
     action_type: 'received',
     quantity: '',
+    notes: '',
+  });
+  const [editForm, setEditForm] = useState({
+    name: '',
+    code: '',
+    storage_location: '',
+    unit: '',
+    low_stock_threshold: '',
+    invoice_no: '',
+    vendor_name: '',
     notes: '',
   });
 
@@ -32,6 +43,16 @@ export default function ComponentDetail() {
         getComponentTransactions(component_id),
       ]);
       setComponent(compRes.data);
+      setEditForm({
+        name: compRes.data.name || '',
+        code: compRes.data.code || '',
+        storage_location: compRes.data.storage_location || '',
+        unit: compRes.data.unit || '',
+        low_stock_threshold: compRes.data.low_stock_threshold || '',
+        invoice_no: compRes.data.invoice_no || '',
+        vendor_name: compRes.data.vendor_name || '',
+        notes: compRes.data.notes || '',
+      });
       setTransactions(transRes.data);
     } catch (err) {
       toast.error('Component not found');
@@ -76,6 +97,36 @@ export default function ComponentDetail() {
       fetchData();
     } catch (err) {
       toast.error(err.message || 'Failed to update stock');
+    }
+  };
+
+  const handleEditDetails = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`http://localhost:5000/api/components/${component_id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify({
+          name: editForm.name,
+          code: editForm.code,
+          storage_location: editForm.storage_location,
+          low_stock_threshold: editForm.low_stock_threshold,
+          unit: editForm.unit,
+          notes: editForm.notes,
+          invoice_no: editForm.invoice_no,
+          vendor_name: editForm.vendor_name,
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message);
+      toast.success('Component details updated');
+      setShowEditDetails(false);
+      fetchData();
+    } catch (err) {
+      toast.error(err.message || 'Failed to update details');
     }
   };
 
@@ -185,17 +236,30 @@ export default function ComponentDetail() {
           {status.label}
         </span>
         {['admin', 'store_manager', 'procurement'].includes(user?.role) && (
-          <button
-            onClick={() => setShowUpdate(!showUpdate)}
-            style={{
-              background: '#1E90FF', border: 'none',
-              borderRadius: '8px', padding: '8px 18px',
-              fontSize: '12px', fontWeight: 600,
-              color: '#fff', cursor: 'pointer',
-            }}
-          >
-            {showUpdate ? 'Cancel' : 'Update Stock'}
-          </button>
+          <>
+            <button
+              onClick={() => setShowUpdate(!showUpdate)}
+              style={{
+                background: '#1E90FF', border: 'none',
+                borderRadius: '8px', padding: '8px 18px',
+                fontSize: '12px', fontWeight: 600,
+                color: '#fff', cursor: 'pointer',
+              }}
+            >
+              {showUpdate ? 'Cancel' : 'Update Stock'}
+            </button>
+            <button
+              onClick={() => setShowEditDetails(!showEditDetails)}
+              style={{
+                background: '#6C5CE7', border: 'none',
+                borderRadius: '8px', padding: '8px 18px',
+                fontSize: '12px', fontWeight: 600,
+                color: '#fff', cursor: 'pointer',
+              }}
+            >
+              {showEditDetails ? 'Cancel' : 'Edit Details'}
+            </button>
+          </>
         )}
         {user?.role === 'admin' && (
           <button
@@ -280,6 +344,120 @@ export default function ComponentDetail() {
         </div>
       )}
 
+      {showEditDetails && (
+        <div style={{
+          background: '#1C1917',
+          border: '0.5px solid rgba(108,92,231,0.2)',
+          borderRadius: '14px',
+          padding: '20px',
+          marginBottom: '20px',
+        }}>
+          <div style={{ fontSize: '14px', fontWeight: 600, color: '#F5F0E8', marginBottom: '16px' }}>
+            Edit component details — {component.name}
+          </div>
+          <form onSubmit={handleEditDetails}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+              <div>
+                <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'rgba(245,240,232,0.4)', marginBottom: '5px' }}>
+                  Name
+                </div>
+                <input
+                  type="text"
+                  value={editForm.name}
+                  onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                  style={inputStyle}
+                />
+              </div>
+              <div>
+                <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'rgba(245,240,232,0.4)', marginBottom: '5px' }}>
+                  Code
+                </div>
+                <input
+                  type="text"
+                  value={editForm.code}
+                  onChange={(e) => setEditForm({ ...editForm, code: e.target.value })}
+                  style={inputStyle}
+                />
+              </div>
+              <div>
+                <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'rgba(245,240,232,0.4)', marginBottom: '5px' }}>
+                  Storage Location
+                </div>
+                <input
+                  type="text"
+                  value={editForm.storage_location}
+                  onChange={(e) => setEditForm({ ...editForm, storage_location: e.target.value })}
+                  style={inputStyle}
+                />
+              </div>
+              <div>
+                <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'rgba(245,240,232,0.4)', marginBottom: '5px' }}>
+                  Unit
+                </div>
+                <input
+                  type="text"
+                  value={editForm.unit}
+                  onChange={(e) => setEditForm({ ...editForm, unit: e.target.value })}
+                  style={inputStyle}
+                />
+              </div>
+              <div>
+                <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'rgba(245,240,232,0.4)', marginBottom: '5px' }}>
+                  Low Stock Threshold
+                </div>
+                <input
+                  type="number"
+                  value={editForm.low_stock_threshold}
+                  onChange={(e) => setEditForm({ ...editForm, low_stock_threshold: e.target.value })}
+                  style={inputStyle}
+                />
+              </div>
+              <div>
+                <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'rgba(245,240,232,0.4)', marginBottom: '5px' }}>
+                  Invoice No
+                </div>
+                <input
+                  type="text"
+                  value={editForm.invoice_no}
+                  onChange={(e) => setEditForm({ ...editForm, invoice_no: e.target.value })}
+                  style={inputStyle}
+                />
+              </div>
+              <div>
+                <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'rgba(245,240,232,0.4)', marginBottom: '5px' }}>
+                  Vendor Name
+                </div>
+                <input
+                  type="text"
+                  value={editForm.vendor_name}
+                  onChange={(e) => setEditForm({ ...editForm, vendor_name: e.target.value })}
+                  style={inputStyle}
+                />
+              </div>
+            </div>
+            <div style={{ marginBottom: '16px' }}>
+              <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'rgba(245,240,232,0.4)', marginBottom: '5px' }}>
+                Notes
+              </div>
+              <textarea
+                value={editForm.notes}
+                onChange={(e) => setEditForm({ ...editForm, notes: e.target.value })}
+                style={{ ...inputStyle, height: '70px', resize: 'vertical', fontFamily: 'Inter, sans-serif' }}
+                placeholder="Any additional notes..."
+              />
+            </div>
+            <button type="submit" style={{
+              background: '#6C5CE7', border: 'none',
+              borderRadius: '8px', padding: '10px 24px',
+              fontSize: '13px', fontWeight: 600,
+              color: '#fff', cursor: 'pointer',
+            }}>
+              Save Details
+            </button>
+          </form>
+        </div>
+      )}
+
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
         <div style={{
           background: '#1C1917',
@@ -291,18 +469,18 @@ export default function ComponentDetail() {
             Component details
           </div>
           {[
-  { label: 'Component ID', value: component.component_id, mono: true },
-  { label: 'Code', value: component.code || 'N/A', mono: true },
-  { label: 'Category', value: component.category },
-  { label: 'Invoice No', value: component.invoice_no || 'N/A', mono: true },
-  { label: 'Vendor Name', value: component.vendor_name || 'N/A' },
-  { label: 'Storage location', value: component.storage_location || 'N/A', mono: true },
-  { label: 'Unit', value: component.unit },
-  { label: 'Supplier', value: component.supplier || 'N/A' },
-  { label: 'Low stock threshold', value: component.low_stock_threshold },
-  { label: 'Created', value: formatDate(component.created_at) },
-  { label: 'Last updated', value: formatDate(component.updated_at) },
-].map((row) => (
+            { label: 'Component ID', value: component.component_id, mono: true },
+            { label: 'Code', value: component.code || 'N/A', mono: true },
+            { label: 'Category', value: component.category },
+            { label: 'Invoice No', value: component.invoice_no || 'N/A', mono: true },
+            { label: 'Vendor Name', value: component.vendor_name || 'N/A' },
+            { label: 'Storage location', value: component.storage_location || 'N/A', mono: true },
+            { label: 'Unit', value: component.unit },
+            { label: 'Supplier', value: component.supplier || 'N/A' },
+            { label: 'Low stock threshold', value: component.low_stock_threshold },
+            { label: 'Created', value: formatDate(component.created_at) },
+            { label: 'Last updated', value: formatDate(component.updated_at) },
+          ].map((row) => (
             <div key={row.label} style={{
               display: 'flex', justifyContent: 'space-between',
               padding: '8px 0',
