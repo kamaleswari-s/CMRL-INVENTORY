@@ -58,7 +58,7 @@ export default function ComponentList() {
 
   useEffect(() => {
     setForm((prev) => ({ ...prev, category }));
-  }, [category]);
+  }, [category, fetchComponents]);
 
   const handleCreate = async (e) => {
     e.preventDefault();
