@@ -9,15 +9,6 @@ export default function Search() {
   const [loading, setLoading] = useState(true);
   const q = searchParams.get('q') || '';
 
-  useEffect(() => {
-    if (!q.trim()) {
-      setResults([]);
-      setLoading(false);
-      return;
-    }
-    fetchResults();
-  }, [q]);
-
   const fetchResults = async () => {
     try {
       setLoading(true);
@@ -32,6 +23,15 @@ export default function Search() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!q.trim()) {
+      setResults([]);
+      setLoading(false);
+      return;
+    }
+    fetchResults();
+  }, [q, fetchResults]);
 
   const getStatusBadge = (comp) => {
     if (comp.remaining_stock === 0) return { label: 'Out of stock', color: '#E8572A', bg: 'rgba(232,87,42,0.1)' };

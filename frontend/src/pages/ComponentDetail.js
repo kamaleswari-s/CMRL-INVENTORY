@@ -65,7 +65,7 @@ export default function ComponentDetail() {
     fetchData();
     socket.on('stockUpdate', fetchData);
     return () => socket.off('stockUpdate');
-  }, [component_id]);
+  }, [component_id, fetchData]);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
