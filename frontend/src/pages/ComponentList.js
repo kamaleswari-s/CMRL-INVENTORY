@@ -3,9 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getComponentsByCategory, createComponent } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
-import io from 'socket.io-client';
+// import io from 'socket.io-client';
 
-const socket = io('https://cmrl-inventory-production.up.railway.app');
+// const socket = io('https://cmrl-inventory-production.up.railway.app');
 
 const categoryLabels = {
   passive: 'Passive Components',
@@ -52,13 +52,13 @@ export default function ComponentList() {
 
   useEffect(() => {
     fetchComponents();
-    socket.on('stockUpdate', fetchComponents);
-    return () => socket.off('stockUpdate');
+    // socket.on('stockUpdate', fetchComponents);
+    // return () => socket.off('stockUpdate');
   }, [category, fetchComponents]);
 
   useEffect(() => {
     setForm((prev) => ({ ...prev, category }));
-  }, [category, fetchComponents]);
+  }, [category]);
 
   const handleCreate = async (e) => {
     e.preventDefault();
@@ -349,4 +349,3 @@ export default function ComponentList() {
     </div>
   );
 }
-
