@@ -1,4 +1,3 @@
-import Trash from './pages/Trash';
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -12,6 +11,7 @@ import Search from './pages/Search';
 import GlobalSearch from './pages/GlobalSearch';
 import AuditLog from './pages/AuditLog';
 import UserManagement from './pages/UserManagement';
+import Trash from './pages/Trash';
 
 function ProtectedRoute({ element }) {
   const { user, loading } = useAuth();
